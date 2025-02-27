@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Control de Gastos</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/781/781760.png">
+  </head>
+  <body>
+    <div id="mask"></div>
+    <div id="message"></div>
+
+    <section class="hero is-primary is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Control de Gastos</h1>
+        </div>
+      </div>
+    </section>
+
+    <form id="form" class="container m-4 pl-4" method="POST" onreset="loadDate()">
+
+      <div class="field">
+        <label class="label">Fecha</label>
+        <div class="control">
+          <div class="datePicker">
+            <input
+              id="date"
+              class="input"
+              type="date"
+              placeholder="Fecha"
+              name="FECHA" required />
+            <span id="date_formatted">Fecha</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Concepto</label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            placeholder="Concepto"
+            name="CONCEPTO" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Valor</label>
+        <div class="control">
+          <input
+            class="input"
+            type="number"
+            placeholder="Valor"
+            name="VALOR" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Pagado por:</label>
+        <div class="control">
+          <label class="radio">
+            <input type="radio" name="PAGADO POR" value="Alice" required /> Alice
+          </label>
+          <label class="radio">
+            <input type="radio" name="PAGADO POR" value="Bob" required /> Bob
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Tipo:</label>
+        <div class="control">
+          <label class="radio">
+            <input type="radio" name="DIVIDIDO?" value="Si" required /> Compartido
+          </label>
+          <label class="radio">
+            <input type="radio" name="DIVIDIDO?" value="No" required /> Préstamo
+          </label>
+        </div>
+      </div>
+
+      <input type="hidden" name="CONCILIADO?" value="No" />
+
+      <hr>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary" type="submit" id="submit-button">
+            Guardar
+          </button>
+        </div>
+        <div class="control">
+          <button class="button is-danger" type="reset">Cancelar</button>
+        </div>
+      </div>
+    </form>
+
+    <script>
+      const sheetId = "https://script.google.com/macros/s/AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa/exec"
+      const A_user = "Paola"
+      const B_user = "Duvan"
+
+      function loadDate() {
+        setTimeout(function() {
+          document.querySelector('input[type="date"]').value = moment().format().split('T')[0]
+          getDate()
+        }, 1)
+      }
+
+      window.addEventListener('load', function() {
+        loadDate()
+        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML.replaceAll('Alice', A_user)
+        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML.replaceAll('Bob', B_user)
+      }, false)
+
+      document.querySelector("#date_formatted").addEventListener('click', function() {
+        document.querySelector("input#date").showPicker()
+      }, false)
+
+      document.getElementById("form").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        document.getElementById("message").textContent = "Guardando...";
+        document.getElementById("message").style.display = "block";
+        document.getElementById("mask").style.display = "block";
+        document.getElementById("submit-button").disabled = true;
+
+        // Collect the form data
+        var formData = new FormData(this);
+        var keyValuePairs = [];
+
+        for (var pair of formData.entries()) {
+          keyValuePairs.push(pair[0] + "=" + pair[1]);
+        }
+
+        var formDataString = keyValuePairs.join("&");
+
+        // Send a POST request to your Google Apps Script
+        fetch(sheetId,
+          {
+            redirect: "follow",
+            method: "POST",
+            body: formDataString,
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
+          }
+        )
+          .then(function (response) {
+            // Check if the request was successful
+            if (response) {
+              return response; // Assuming your script returns JSON response
+            } else {
+              throw new Error("Falló al intentar guardar los datos");
+            }
+          })
+          .then(function (data) {
+            // Display a success message
+            document.getElementById("message").textContent = "¡Datos guardados exitosamente!";
+            document.getElementById("message").style.display = "block";
+            document.getElementById("mask").style.display = "block";
+            document.getElementById("message").style.backgroundColor = "green";
+            document.getElementById("message").style.color = "beige";
+            document.getElementById("submit-button").disabled = false;
+            document.getElementById("form").reset();
+
+            setTimeout(function () {
+              document.getElementById("message").textContent = "";
+              document.getElementById("message").style.display = "none";
+              document.getElementById("mask").style.display = "none";
+            }, 2600);
+          })
+          .catch(function (error) {
+            // Handle errors, you can display an error message here
+            console.error(error);
+            document.getElementById("message").textContent = "Ha ocurrido un error al intentar guardar los datos.";
+            document.getElementById("message").style.display = "block";
+            document.getElementById("mask").style.display = "block";
+          });
+      });
+    </script>
+    <script>
+      function getDate() {
+          console.log(document.querySelector("#date").value)
+          document.querySelector("#date_formatted").innerHTML = moment(document.querySelector("#date").value, "YYYY-MM-DD").format('LL')
+
+          if (document.querySelector("#date").value) {
+            document.querySelector("#date").setAttribute('data-date', moment(document.querySelector("#date").value, "YYYY-MM-DD").format('LL'))
+          } else {
+            loadDate()
+          }
+      }
+
+      document.querySelector("#date").addEventListener('change', function (evt) {
+          getDate()
+      })
+    </script>
+    <style>
+      * {
+        user-select: none;
+      }
+
+      div#mask {
+          display: none;
+          background-color: #000000bd;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: 9;
+      }
+
+      #message {
+          display: none;
+          font-weight: bold;
+          color: green;
+          padding: 8px;
+          background-color: beige;
+          border-radius: 4px;
+          border-color: aquamarine;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 9999;
+      }
+
+      h1.title {
+          text-align: center;
+      }
+      .m-4 {
+          margin: unset !important;
+      }
+      input.input[type="date"] {
+          color-scheme: dark;
+          width: unset !important;
+          opacity: 0;
+          position: fixed;
+      }
+
+      label.radio {
+          background-color: azure;
+          width: 30vw;
+          height: 6vh;
+          border-radius: 15px;
+          margin: 0 15px;
+          color: darkblue;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      label.radio:has(input[type="radio"]:checked) {
+          background-color: chartreuse;
+          font-weight: bold;
+      }
+
+      div.control {
+          display: flex;
+          justify-content: center;
+          gap: 1vw;
+      }
+
+      input[type="radio"] {
+          width: 1px;
+          opacity: 0;
+          position: absolute;
+      }
+
+      .field.is-grouped {
+          justify-content: space-evenly !important;
+      }
+
+      form#form {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          align-items: stretch;
+          height: 85vh;
+      }
+
+      .datePicker {
+          outline-style: solid;
+          outline-width: thin;
+          outline-color: #353a46;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          border-radius: 5px;
+          color: white;
+          padding: 0.5rem 1rem;
+      }
+
+      input::-webkit-datetime-edit, input::-webkit-inner-spin-button, input::-webkit-clear-button {
+          display: none;
+      }
+
+      input::-webkit-calendar-picker-indicator {
+          position: absolute;
+          top: 3px;
+          right: 0;
+          color: black;
+          opacity: 1;
+      }
+
+      @media screen and (orientation: landscape) {
+        html {
+            background-color: azure;
+        }
+        body {
+            width: 30vw;
+            height: 75vh;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+        }
+        form#form {
+            background-color: black;
+            border-radius: 0 0 10px 10px;
+        }
+        .pl-4 {
+            padding: 1rem !important;
+        }
+        section.hero.is-primary.is-bold {
+            border-radius: 10px 10px 0 0;
+        }
+      }
+
+      @media screen and (orientation: portrait) {
+        h1.title {
+            font-size: 25pt;
+        }
+        .pl-4 {
+            padding: 3rem !important;
+        }
+      }
+    </style>
+  </body>
+</html>
