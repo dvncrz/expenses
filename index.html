@@ -102,9 +102,29 @@
     </form>
 
     <script>
-      const sheetId = "https://script.google.com/macros/s/AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa/exec"
-      const A_user = "Paola"
-      const B_user = "Duvan"
+      const dataSheets = {
+        cruzyomayusa: {
+          sheetId: "AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa",
+          A_user: "Paola",
+          B_user: "Duvan"
+        },
+        infantecruz: {
+          sheetId: "AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa",
+          A_user: "Angélica",
+          B_user: "Carlos"
+        },
+        fonsecacruz: {
+          sheetId: "AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa",
+          A_user: "Paola",
+          B_user: "Gustavo"
+        },
+      }
+
+      // const sheetId = "https://script.google.com/macros/s/AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa/exec"
+      // const A_user = "Paola"
+      // const B_user = "Duvan"
+
+      let source
 
       function loadDate() {
         setTimeout(function() {
@@ -114,9 +134,16 @@
       }
 
       window.addEventListener('load', function() {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        source = urlParams.get('source');
+
+        if (source === null || source === '' || Object.keys(dataSheets).indexOf(source) === -1) window.open("/notfound","_self")
+
         loadDate()
-        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML.replaceAll('Alice', A_user)
-        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML.replaceAll('Bob', B_user)
+
+        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML.replaceAll('Alice', dataSheets[source].A_user)
+        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML.replaceAll('Bob', dataSheets[source].B_user)
       }, false)
 
       document.querySelector("#date_formatted").addEventListener('click', function() {
@@ -141,7 +168,7 @@
         var formDataString = keyValuePairs.join("&");
 
         // Send a POST request to your Google Apps Script
-        fetch(sheetId,
+        fetch(`https://script.google.com/macros/s/${dataSheets[source].sheetId}/exec`,
           {
             redirect: "follow",
             method: "POST",
