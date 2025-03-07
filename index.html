@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./script.js"></script>
+    <script src="./numpad.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Control de Gastos</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/781/781760.png">
   </head>
   <body>
-    <div id="mask"></div>
+    <div id="mask" class="hide"></div>
     <div id="message"></div>
 
     <section class="hero is-primary is-bold">
@@ -96,7 +97,7 @@
           </button>
         </div>
         <div class="control">
-          <button class="button is-danger" type="reset">Reset</button>
+          <button class="button is-danger" type="reset" onclick="resetAmount()">Reset</button>
         </div>
         <div class="control">
           <button onclick="javascript:window.open('/close','_self')">Cerrar</button>
@@ -104,273 +105,13 @@
       </div>
     </form>
 
-    <script>
-      const dataSheets = {
-        cruzyomayusa: {
-          sheetId: "AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa",
-          A_user: "Paola",
-          B_user: "Duvan"
-        },
-        infantecruz: {
-          sheetId: "AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa",
-          A_user: "Angélica",
-          B_user: "Carlos"
-        },
-        fonsecacruz: {
-          sheetId: "AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa",
-          A_user: "Paola",
-          B_user: "Gustavo"
-        },
-      }
+    <div id="amount" class="hide">
+      <span class="label">Monto:</span>
+      <span class="amount_bg hide">0</span>
+      <span class="amount">0</span>
+      <span class="numpad"></span>
+      <span class="next hide"></span>
+    </div>
 
-      // const sheetId = "https://script.google.com/macros/s/AKfycbxfLev9aB_I5fjXvNXqY5cjsRUY7W3yImDnhOV-1kFPLe05dS-AhBtsqEnnx-Qq7sTa/exec"
-      // const A_user = "Paola"
-      // const B_user = "Duvan"
-
-      let source
-
-      function loadDate() {
-        setTimeout(function() {
-          document.querySelector('input[type="date"]').value = moment().format().split('T')[0]
-          getDate()
-        }, 1)
-      }
-
-      window.addEventListener('load', function() {
-
-        const urlParams = new URLSearchParams(window.location.search);
-        source = urlParams.get('source');
-
-        if (source === null || source === '' || Object.keys(dataSheets).indexOf(source) === -1) window.open("/notfound","_self")
-
-        loadDate()
-
-        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Alice"]').parentElement.innerHTML.replaceAll('Alice', dataSheets[source].A_user)
-        document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML = document.querySelector('input[type="radio"][name="PAGADO POR"][value="Bob"]').parentElement.innerHTML.replaceAll('Bob', dataSheets[source].B_user)
-      }, false)
-
-      document.querySelector("#date_formatted").addEventListener('click', function() {
-        document.querySelector("input#date").showPicker()
-      }, false)
-
-      document.getElementById("form").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent the default form submission
-        document.getElementById("message").textContent = "Guardando...";
-        document.getElementById("message").style.display = "block";
-        document.getElementById("mask").style.display = "block";
-        document.getElementById("submit-button").disabled = true;
-
-        // Collect the form data
-        var formData = new FormData(this);
-        var keyValuePairs = [];
-
-        for (var pair of formData.entries()) {
-          keyValuePairs.push(pair[0] + "=" + pair[1]);
-        }
-
-        var formDataString = keyValuePairs.join("&");
-
-        // Send a POST request to your Google Apps Script
-        fetch(`https://script.google.com/macros/s/${dataSheets[source].sheetId}/exec`,
-          {
-            redirect: "follow",
-            method: "POST",
-            body: formDataString,
-            headers: {
-              "Content-Type": "text/plain;charset=utf-8",
-            },
-          }
-        )
-          .then(function (response) {
-            // Check if the request was successful
-            if (response) {
-              return response; // Assuming your script returns JSON response
-            } else {
-              throw new Error("Falló al intentar guardar los datos");
-            }
-          })
-          .then(function (data) {
-            // Display a success message
-            document.getElementById("message").textContent = "¡Datos guardados exitosamente!";
-            document.getElementById("message").style.display = "block";
-            document.getElementById("mask").style.display = "block";
-            document.getElementById("message").style.backgroundColor = "green";
-            document.getElementById("message").style.color = "beige";
-            document.getElementById("submit-button").disabled = false;
-            document.getElementById("form").reset();
-
-            setTimeout(function () {
-              document.getElementById("message").textContent = "";
-              document.getElementById("message").style.display = "none";
-              document.getElementById("mask").style.display = "none";
-            }, 2600);
-          })
-          .catch(function (error) {
-            // Handle errors, you can display an error message here
-            console.error(error);
-            document.getElementById("message").textContent = "Ha ocurrido un error al intentar guardar los datos.";
-            document.getElementById("message").style.display = "block";
-            document.getElementById("mask").style.display = "block";
-          });
-      });
-    </script>
-    <script>
-      function getDate() {
-          console.log(document.querySelector("#date").value)
-          document.querySelector("#date_formatted").innerHTML = moment(document.querySelector("#date").value, "YYYY-MM-DD").format('LL')
-
-          if (document.querySelector("#date").value) {
-            document.querySelector("#date").setAttribute('data-date', moment(document.querySelector("#date").value, "YYYY-MM-DD").format('LL'))
-          } else {
-            loadDate()
-          }
-      }
-
-      document.querySelector("#date").addEventListener('change', function (evt) {
-          getDate()
-      })
-    </script>
-    <style>
-      * {
-        user-select: none;
-      }
-
-      div#mask {
-          display: none;
-          background-color: #000000bd;
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          z-index: 9;
-      }
-
-      #message {
-          display: none;
-          font-weight: bold;
-          color: green;
-          padding: 8px;
-          background-color: beige;
-          border-radius: 4px;
-          border-color: aquamarine;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 9999;
-      }
-
-      h1.title {
-          text-align: center;
-      }
-      .m-4 {
-          margin: unset !important;
-      }
-      input.input[type="date"] {
-          color-scheme: dark;
-          width: unset !important;
-          opacity: 0;
-          position: fixed;
-      }
-
-      label.radio {
-          background-color: azure;
-          width: 30vw;
-          height: 6vh;
-          border-radius: 15px;
-          margin: 0 15px;
-          color: darkblue;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-      }
-
-      label.radio:has(input[type="radio"]:checked) {
-          background-color: chartreuse;
-          font-weight: bold;
-      }
-
-      div.control {
-          display: flex;
-          justify-content: center;
-          gap: 1vw;
-      }
-
-      input[type="radio"] {
-          width: 1px;
-          opacity: 0;
-          position: absolute;
-      }
-
-      .field.is-grouped {
-          justify-content: space-evenly !important;
-      }
-
-      form#form {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-evenly;
-          align-items: stretch;
-          height: 85vh;
-      }
-
-      .datePicker {
-          outline-style: solid;
-          outline-width: thin;
-          outline-color: #353a46;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          border-radius: 5px;
-          color: white;
-          padding: 0.5rem 1rem;
-      }
-
-      input::-webkit-datetime-edit, input::-webkit-inner-spin-button, input::-webkit-clear-button {
-          display: none;
-      }
-
-      input::-webkit-calendar-picker-indicator {
-          position: absolute;
-          top: 3px;
-          right: 0;
-          color: black;
-          opacity: 1;
-      }
-
-      @media screen and (orientation: landscape) {
-        html {
-            background-color: azure;
-        }
-        body {
-            width: 30vw;
-            height: 75vh;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            position: absolute;
-        }
-        form#form {
-            background-color: black;
-            border-radius: 0 0 10px 10px;
-        }
-        .pl-4 {
-            padding: 1rem !important;
-        }
-        section.hero.is-primary.is-bold {
-            border-radius: 10px 10px 0 0;
-        }
-      }
-
-      @media screen and (orientation: portrait) {
-        h1.title {
-            font-size: 25pt;
-        }
-        .pl-4 {
-            padding: 3rem !important;
-        }
-      }
-    </style>
   </body>
 </html>

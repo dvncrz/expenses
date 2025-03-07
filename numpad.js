@@ -43,6 +43,10 @@ window.addEventListener('load', function () {
     let open = 0
     let close = 0
 
+    document.querySelector('#amount .next').addEventListener('click', function () {
+        closeAmount()
+    }, false)
+
     for (r = 0; r < rows; r++) {
         let row = document.createElement('div')
 
@@ -60,19 +64,37 @@ window.addEventListener('load', function () {
                 // Delete
                 if (pressed === "DEL") {
                     if (text.length > 1) amount_bg.html(text.slice(0, -1))
-                    else amount_bg.html() = "0"
+                    else {
+                        amount_bg.html() = "0"
+
+                        document.querySelector('#amount .next').classList.remove('show')
+                        document.querySelector('#amount .next').classList.add('hide')
+                    }
                 }
 
                 // Clear
-                if (pressed === "C") amount_bg.html("0")
+                if (pressed === "C") {
+                    amount_bg.html("0")
+
+                    document.querySelector('#amount .next').classList.remove('show')
+                    document.querySelector('#amount .next').classList.add('hide')
+                }
 
                 // Enter
                 if (pressed === "ENTER") {
                     try {
                         amount_bg.html(Math.round(eval(amount_bg.html())))
+                        document.querySelector('#amount .next').classList.remove('hide')
+                        document.querySelector('#amount .next').classList.add('show')
                     } catch (e) {
                         alert('Hay uno o varios errores. Por favor revise e intente de nuevo.')
                     }
+                }
+
+                // Operands
+                if ("/*-+".indexOf(pressed) !== -1) {
+                    document.querySelector('#amount .next').classList.remove('show')
+                    document.querySelector('#amount .next').classList.add('hide')
                 }
 
                 // Type
