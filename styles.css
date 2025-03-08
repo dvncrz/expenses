@@ -135,7 +135,7 @@ input::-webkit-calendar-picker-indicator {
 
     body {
         width: 30vw;
-        height: 75vh;
+        height: 100vh;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -182,6 +182,7 @@ input::-webkit-calendar-picker-indicator {
     background-color: black;
     padding: 10px;
     width: 25vw;
+    min-width: 25vw;
     display: inline-grid;
     border: inset;
     text-align: end;
@@ -201,7 +202,7 @@ input::-webkit-calendar-picker-indicator {
     flex-wrap: wrap;
     flex-direction: column;
     position: absolute;
-    bottom: 0;
+    bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 9;

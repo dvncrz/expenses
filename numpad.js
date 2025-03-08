@@ -43,9 +43,9 @@ window.addEventListener('load', function () {
     let open = 0
     let close = 0
 
-    document.querySelector('#amount .next').addEventListener('click', function () {
-        closeAmount()
-    }, false)
+    // document.querySelector('#amount .next').addEventListener('click', function () {
+    //     closeAmount()
+    // }, false)
 
     for (r = 0; r < rows; r++) {
         let row = document.createElement('div')
@@ -86,6 +86,9 @@ window.addEventListener('load', function () {
                         amount_bg.html(Math.round(eval(amount_bg.html())))
                         document.querySelector('#amount .next').classList.remove('hide')
                         document.querySelector('#amount .next').classList.add('show')
+
+                        document.querySelector("#amount div[data='ENTER']").innerHTML = 'NEXT'
+                        document.querySelector("#amount div[data='ENTER']").setAttribute('data','NEXT')
                     } catch (e) {
                         alert('Hay uno o varios errores. Por favor revise e intente de nuevo.')
                     }
@@ -95,6 +98,16 @@ window.addEventListener('load', function () {
                 if (pressed !== "ENTER") {
                     document.querySelector('#amount .next').classList.remove('show')
                     document.querySelector('#amount .next').classList.add('hide')
+
+                    try {
+                        document.querySelector("#amount div[data='NEXT']").innerHTML = 'ENTER'
+                        document.querySelector("#amount div[data='NEXT']").setAttribute('data','ENTER')
+                    } catch(e) {}
+                }
+
+                // Next
+                if (pressed === "NEXT") {
+                    closeAmount()
                 }
 
                 // Type
