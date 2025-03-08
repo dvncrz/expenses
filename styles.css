@@ -20,6 +20,19 @@ div#mask {
     z-index: 9;
 }
 
+button#greeting {
+    position: absolute;
+    z-index: 9;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: xxx-large;
+    background-color: #00d1b2;
+    padding: 2% 5%;
+    border-radius: 10px;
+    color: black;
+}
+
 #message {
     display: none;
     font-weight: bold;
@@ -204,7 +217,7 @@ input::-webkit-calendar-picker-indicator {
     width: 80px;
     height: 60px;
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
     margin: 3px;
     font-size: xx-large;

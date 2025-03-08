@@ -92,7 +92,7 @@ window.addEventListener('load', function () {
                 }
 
                 // Operands
-                if ("/*-+".indexOf(pressed) !== -1) {
+                if (pressed !== "ENTER") {
                     document.querySelector('#amount .next').classList.remove('show')
                     document.querySelector('#amount .next').classList.add('hide')
                 }

@@ -38,15 +38,13 @@ function getDate() {
 }
 
 function openAmount() {
-    document.querySelector("#mask").classList.remove('hide')
-    document.querySelector("#mask").classList.add('show')
+    showMask()
     document.querySelector("#amount").classList.remove('hide')
     document.querySelector("#amount").classList.add('show')
 }
 
 function closeAmount() {
-    document.querySelector("#mask").classList.remove('show')
-    document.querySelector("#mask").classList.add('hide')
+    hideMask()
     document.querySelector("#amount").classList.remove('show')
     document.querySelector("#amount").classList.add('hide')
 
@@ -58,8 +56,35 @@ function resetAmount() {
     document.querySelector("#amount .amount").innerText = ''
 }
 
-window.addEventListener('load', function () {
+function hideMask() {
+    document.querySelector("#mask").classList.remove('show')
+    document.querySelector("#mask").classList.add('hide')
+}
 
+function showMask() {
+    document.querySelector("#mask").classList.remove('hide')
+    document.querySelector("#mask").classList.add('show')
+}
+
+function openFullscreen() {
+    let elem = document.querySelector("body");
+
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+        document.querySelector("#greeting").classList.add('hide')
+        hideMask()
+    } else if (elem.webkitRequestFullscreen) {
+        /* Safari */
+        elem.webkitRequestFullscreen();
+        hideMask()
+    } else if (elem.msRequestFullscreen) {
+        /* IE11 */
+        elem.msRequestFullscreen();
+        hideMask()
+    }
+}
+
+window.addEventListener('load', function () {
     const urlParams = new URLSearchParams(window.location.search);
     source = urlParams.get('source');
 
@@ -67,7 +92,7 @@ window.addEventListener('load', function () {
 
     loadDate()
 
-    document.querySelector("input[placeholder='Valor']").addEventListener('click', function() {
+    document.querySelector("input[placeholder='Valor']").addEventListener('click', function () {
         openAmount()
     }, false)
 
@@ -82,7 +107,7 @@ window.addEventListener('load', function () {
         e.preventDefault(); // Prevent the default form submission
         document.getElementById("message").textContent = "Guardando...";
         document.getElementById("message").style.display = "block";
-        document.getElementById("mask").style.display = "block";
+        showMask()
         document.getElementById("submit-button").disabled = true;
 
         // Collect the form data
@@ -116,8 +141,7 @@ window.addEventListener('load', function () {
                 // Display a success message
                 document.getElementById("message").textContent = "¡Datos guardados exitosamente!";
                 document.getElementById("message").style.display = "block";
-                document.getElementById("mask").classList.add('show')
-                document.getElementById("mask").classList.remove('hide')
+                showMask()
                 document.getElementById("message").style.backgroundColor = "green";
                 document.getElementById("message").style.color = "beige";
                 document.getElementById("submit-button").disabled = false;
@@ -126,8 +150,7 @@ window.addEventListener('load', function () {
                 setTimeout(function () {
                     document.getElementById("message").textContent = "";
                     document.getElementById("message").style.display = "none";
-                    document.getElementById("mask").classList.add('hide')
-                    document.getElementById("mask").classList.remove('show')
+                    hideMask()
                 }, 2600);
             })
             .catch(function (error) {
@@ -135,8 +158,7 @@ window.addEventListener('load', function () {
                 console.error(error);
                 document.getElementById("message").textContent = "Ha ocurrido un error al intentar guardar los datos.";
                 document.getElementById("message").style.display = "block";
-                document.getElementById("mask").classList.add('show')
-                document.getElementById("mask").classList.remove('hide')
+                showMask()
             });
     });
 
