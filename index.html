@@ -7,9 +7,10 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="./script.js"></script>
     <script src="./numpad.js"></script>
-    <meta name="viewport" content="width=device-width, heigh=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Control de Gastos</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/781/781760.png">
+    <link rel="stylesheet" href="https://unpkg.com/keyboard-css@1.2.4/dist/css/main.min.css" />
   </head>
   <body>
     <div id="mask" class="show"></div>
@@ -18,11 +19,7 @@
     <button id="greeting" onclick="openFullscreen()">Iniciar</button>
 
     <section class="hero is-primary is-bold">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title">Control de Gastos</h1>
-        </div>
-      </div>
+      <h1 class="title">Control de Gastos</h1>
     </section>
 
     <form id="form" class="container m-4 pl-4" method="POST" onreset="loadDate()">
@@ -49,7 +46,9 @@
             class="input"
             type="text"
             placeholder="Concepto"
-            name="CONCEPTO" required />
+            name="CONCEPTO"
+            required
+            inputmode="text" />
         </div>
       </div>
 
@@ -61,8 +60,8 @@
             type="number"
             placeholder="Valor"
             name="VALOR"
-            required 
-            readonly/>
+            required
+            readonly />
         </div>
       </div>
 

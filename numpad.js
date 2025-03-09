@@ -51,13 +51,15 @@ window.addEventListener('load', function () {
         let row = document.createElement('div')
 
         for (c = 0; c < cols; c++) {
-            let col = document.createElement('div')
+            let col = document.createElement('kbd')
+            col.classList.add('kbc-button')
             col.innerHTML = keys[r * cols + c]
             col.setAttribute('data', keys[r * cols + c])
 
             col.addEventListener('click', function () {
                 let text = amount_bg.html()
-                let pressed = col.innerHTML
+                // let pressed = col.innerHTML
+                let pressed = col.getAttribute('data')
 
                 convert2Thousand()
 
@@ -75,20 +77,15 @@ window.addEventListener('load', function () {
                 // Clear
                 if (pressed === "C") {
                     amount_bg.html("0")
-
-                    document.querySelector('#amount .next').classList.remove('show')
-                    document.querySelector('#amount .next').classList.add('hide')
                 }
 
                 // Enter
                 if (pressed === "ENTER") {
                     try {
                         amount_bg.html(Math.round(eval(amount_bg.html())))
-                        document.querySelector('#amount .next').classList.remove('hide')
-                        document.querySelector('#amount .next').classList.add('show')
 
-                        document.querySelector("#amount div[data='ENTER']").innerHTML = 'NEXT'
-                        document.querySelector("#amount div[data='ENTER']").setAttribute('data','NEXT')
+                        document.querySelector("#amount kbd[data='ENTER']").innerHTML = 'NEXT'
+                        document.querySelector("#amount kbd[data='ENTER']").setAttribute('data','NEXT')
                     } catch (e) {
                         alert('Hay uno o varios errores. Por favor revise e intente de nuevo.')
                     }
@@ -100,8 +97,8 @@ window.addEventListener('load', function () {
                     document.querySelector('#amount .next').classList.add('hide')
 
                     try {
-                        document.querySelector("#amount div[data='NEXT']").innerHTML = 'ENTER'
-                        document.querySelector("#amount div[data='NEXT']").setAttribute('data','ENTER')
+                        document.querySelector("#amount kbd[data='NEXT']").innerHTML = 'ENTER'
+                        document.querySelector("#amount kbd[data='NEXT']").setAttribute('data','ENTER')
                     } catch(e) {}
                 }
 
