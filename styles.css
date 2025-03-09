@@ -209,14 +209,14 @@ input::-webkit-calendar-picker-indicator {
     left: 50%;
     transform: translateX(-50%);
     z-index: 9;
-    grid-template-rows: repeat(5, 6vw);
+    grid-template-rows: repeat(5, 20vw);
     grid-row-gap: 0.7rem;
     font-size: x-large;
 }
 
 #amount .numpad > div {
     display: grid;
-    grid-template-columns: repeat(4, 6vw);
+    grid-template-columns: repeat(4, 20vw);
     grid-column-gap: 0.7rem;
 }
 
