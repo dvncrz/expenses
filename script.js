@@ -48,7 +48,9 @@ function closeAmount() {
     document.querySelector("#amount").classList.remove('show')
     document.querySelector("#amount").classList.add('hide')
 
-    document.querySelector("input[placeholder='Valor']").value = document.querySelector("#amount .amount_bg").innerText
+    // document.querySelector("input[placeholder='Valor']").value = document.querySelector("#amount .amount_bg").innerText
+    document.querySelector("input[name='VALOR_DUMMY']").value = '$' + document.querySelector("#amount .amount div.line span.value").innerText
+    document.querySelector("input[name='VALOR']").value = document.querySelector("#amount .amount_bg").innerText
 }
 
 function resetAmount() {

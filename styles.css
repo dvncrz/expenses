@@ -89,6 +89,7 @@ div.control {
     display: flex;
     justify-content: center;
     gap: 1vw;
+    align-items: center;
 }
 
 input[type="radio"] {
@@ -200,6 +201,12 @@ input::-webkit-calendar-picker-indicator {
     min-height: 6vh;
 }
 
+#amount.entered span.amount {
+    background-color: chartreuse !important;
+    color: black !important;
+    font-weight: bold;
+}
+
 /* NUMPAD */
 
 #amount span.numpad {
@@ -277,6 +284,8 @@ input::-webkit-calendar-picker-indicator {
 kbd.kbc-button {
     width: 100%;
     height: 100%;
+    font-weight: bold;
+    font-size: larger;
 }
 
 kbd.kbc-button:active {

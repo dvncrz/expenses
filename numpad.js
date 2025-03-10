@@ -66,12 +66,7 @@ window.addEventListener('load', function () {
                 // Delete
                 if (pressed === "DEL") {
                     if (text.length > 1) amount_bg.html(text.slice(0, -1))
-                    else {
-                        amount_bg.html() = "0"
-
-                        document.querySelector('#amount .next').classList.remove('show')
-                        document.querySelector('#amount .next').classList.add('hide')
-                    }
+                    else amount_bg.html() = "0"
                 }
 
                 // Clear
@@ -84,6 +79,8 @@ window.addEventListener('load', function () {
                     try {
                         amount_bg.html(Math.round(eval(amount_bg.html())))
 
+                        document.querySelector('#amount').classList.add('entered')
+
                         document.querySelector("#amount kbd[data='ENTER']").innerHTML = 'NEXT'
                         document.querySelector("#amount kbd[data='ENTER']").setAttribute('data','NEXT')
                     } catch (e) {
@@ -93,8 +90,7 @@ window.addEventListener('load', function () {
 
                 // Operands
                 if (pressed !== "ENTER") {
-                    document.querySelector('#amount .next').classList.remove('show')
-                    document.querySelector('#amount .next').classList.add('hide')
+                    document.querySelector('#amount').classList.remove('entered')
 
                     try {
                         document.querySelector("#amount kbd[data='NEXT']").innerHTML = 'ENTER'
